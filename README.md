@@ -1,151 +1,150 @@
-# package log
+# gotemplate
+[![CircleCI](https://circleci.com/gh/cep21/gotemplate.svg)](https://circleci.com/gh/cep21/gotemplate)
+[![GoDoc](https://godoc.org/github.com/cep21/gotemplate?status.svg)](https://godoc.org/github.com/cep21/gotemplate)
+[![codecov](https://codecov.io/gh/cep21/gotemplate/branch/master/graph/badge.svg)](https://codecov.io/gh/cep21/gotemplate)
 
-`package log` provides a minimal interface for structured logging in services.
-It may be wrapped to encode conventions, enforce type-safety, provide leveled
-logging, and so on. It can be used for both typical application log events,
-and log-structured data streams.
+A short one sentence description of your code, such as Gotemplate is a minimal template repository for well constructed
+GitHub go libraries.
 
-## Structured logging
+Explain why (not how) someone would want to use this code.  This should be a bit of a sales pitch.  Use gotemplate to
+spin up a new Go library on GitHub, without making it a direct fork.  It sets you up with the minimal parts you'll want
+to ensure your code starts and stays at a high quality.  You can read more about template repositories
+[from GitHub](https://github.blog/2019-06-06-generate-new-repositories-with-repository-templates/).
 
-Structured logging is, basically, conceding to the reality that logs are
-_data_, and warrant some level of schematic rigor. Using a stricter,
-key/value-oriented message format for our logs, containing contextual and
-semantic information, makes it much easier to get insight into the
-operational activity of the systems we build. Consequently, `package log` is
-of the strong belief that "[the benefits of structured logging outweigh the
-minimal effort involved](https://www.thoughtworks.com/radar/techniques/structured-logging)".
+This setup includes:
+* Continuous testing with [CircleCI](https://circleci.com/) on multiple go versions.
+* Static analysis checking with [golangci-lint](https://github.com/golangci/golangci-lint).
+* Setup [go modules](https://github.com/golang/go/wiki/Modules).
+* Widely usable source license Apache 2.0
+* [godoc](https://godoc.org) source code documentation
+* Code coverage reporting with [codecov](https://codecov.io)
+* [Makefile](https://en.wikipedia.org/wiki/Makefile) helper for formatting, building, and running your code.
+* Testable [examples](https://blog.golang.org/examples).
+* Basic [README](https://en.wikipedia.org/wiki/README) file with good starting sections.
 
-Migrating from unstructured to structured logging is probably a lot easier
-than you'd expect.
+# Usage
 
+Include usage examples.  These can often be links or direct copies from your
+[example test file](./gotemplate_example_test.go).
+
+<!--
 ```go
-// Unstructured
-log.Printf("HTTP server listening on %s", addr)
-
-// Structured
-logger.Log("transport", "HTTP", "addr", addr, "msg", "listening")
+    func ExampleRemoveMe() {
+    	fmt.Println(gotemplate.RemoveMe("hello", "world"))
+    }
 ```
+-->
+To use gotemplate:
+1. Visit the generation URL for gotemplate at https://github.com/cep21/gotemplate/generate and create your repository.
+2. Sign in with GitHub for [CircleCI](https://circleci.com) and [codecov](https://codecov.io).  Afterwards, enable each
+for your repository.  Direct links to enable look something like this for [codecov](https://codecov.io/gh/cep21/+) and
+[CircleCI](https://circleci.com/add-projects/gh/cep21), but for your user name.
+3. Rename cep21/gotemplate to your repository.  There is a makefile helper this, which expects an OWNER
+ and REPO parameter.  For example, if you were to setup the github repository github.com/example/athing you would run
+ `make setup_repo OWNER=example REPO=athing`.
+4. Take out the parts of the README that don't make sense.  Keep the sections you want.
+5. Push your repository and watch it build.
 
-## Usage
+# Design Rational
 
-### Typical application logging
+Talk about why you wrote this code the way you did.  A lot of this may focus on what you decided **not** to do.
+For the things you did do, explain why it's important.  This may serve as a mini-FAQ while your project is small.
+Move this out to something more heavy weight like [GitHub Pages](https://pages.github.com) if your project gets very
+complex.
 
-```go
-w := log.NewSyncWriter(os.Stderr)
-logger := log.NewLogfmtLogger(w)
-logger.Log("question", "what is the meaning of life?", "answer", 42)
+## License file
 
-// Output:
-// question="what is the meaning of life?" answer=42
-```
+A [license](./LICENSE.txt) file is mandatory for open source projects.  Which you use is up to you. Most companies I've
+seen appreciate [Apache 2.0](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)) for the patent clauses.
+Another reasonable choice is [MIT](https://tldrlegal.com/license/mit-license).
 
-### Contextual Loggers
+## README
 
-```go
-func main() {
-	var logger log.Logger
-	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
-	logger = log.With(logger, "instance_id", 123)
+A [readme](./README.md) file is the first thing people see when they visit your code repository and should convince
+someone to want to use your code and be a launching pad to other tasks.  When your project is a huge hit, you can move
+this somewhere else, but for small projects a README should be enough for all information you need.
 
-	logger.Log("msg", "starting")
-	NewWorker(log.With(logger, "component", "worker")).Run()
-	NewSlacker(log.With(logger, "component", "slacker")).Run()
-}
+## Makefile
 
-// Output:
-// instance_id=123 msg=starting
-// instance_id=123 component=worker msg=running
-// instance_id=123 component=slacker msg=running
-```
+A [Makefile](./Makefile) is a concise way to communicate what common terms like "linting" or "testing" mean exactly. 
+For example, testing isn't just "go test", it's "go test on all files with the -race detector". Similarly, linting isn't
+just "running go vet", it may be "running golangci-lint with some flags".  Makefile targets should be common software
+terms like "build" or "test" that contain specific commands for what that term means.
 
-### Interact with stdlib logger
+## Continuous testing
 
-Redirect stdlib logger to Go kit logger.
+[CircleCI](./.circleci) allows you to run checks on requests and commits to make sure your code stays working.
+Another popular choice is [TravisCI](https://travis-ci.org).  Travis is a fine choice: I just prefer CircleCI.  I've
+talked about why on a previous post
+[The 13 Things That Make a Good Build System](https://www.signalfx.com/blog/the-13-things-that-make-a-good-build-system/).
+An important bonus for me is that CircleCI is free for private git repositories, which lets me test out code before I'm
+ready to make it public.
 
-```go
-import (
-	"os"
-	stdlog "log"
-	kitlog "github.com/go-kit/kit/log"
-)
+I purposly keep commands inside CI systems simple, like `make XYZ`, instead of embedding the command, like
+`go test -v -race ./...`, because I feel depending upon a common standard like a Makefile makes it easier to later
+switch CI systems.  The more complex your CI system's commands become, the more difficult it is to debug the system
+locally or migrate to another CI provider.
 
-func main() {
-	logger := kitlog.NewJSONLogger(kitlog.NewSyncWriter(os.Stdout))
-	stdlog.SetOutput(kitlog.NewStdlibAdapter(logger))
-	stdlog.Print("I sure like pie")
-}
+## Static analysis
 
-// Output:
-// {"msg":"I sure like pie","ts":"2016/01/01 12:34:56"}
-```
+Automatic detection of software bugs is very powerful and can help push new code above a minimum bar of quality.
+The best for Go right now is [Golangci-lint](https://github.com/golangci/golangci-lint).  By combining the output of
+many linters, reusing source code parsing between linters, using semantic versioning, and configuration from a yml file
+it allows easy, precise, reproducible, and comprehensive static analysis.
 
-Or, if, for legacy reasons, you need to pipe all of your logging through the
-stdlib log package, you can redirect Go kit logger to the stdlib logger.
+The linters configured in [.golangci.yml](./.golangci.yml) seem to be reasonable defaults.  Feel free to add or remove
+them as you want.
 
-```go
-logger := kitlog.NewLogfmtLogger(kitlog.StdlibWriter{})
-logger.Log("legacy", true, "msg", "at least it's something")
+## Testable examples
 
-// Output:
-// 2016/01/01 12:34:56 legacy=true msg="at least it's something"
-```
+I really like [testable examples](./gotemplate_example_test.go) as code documentation that verifies itself as correct (unlike actual documentation blocks
+which are never compiled).  Testable examples also integrate well with godoc and most IDE help dialogs.
 
-### Timestamps and callers
+## doc.go
 
-```go
-var logger log.Logger
-logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
-logger = log.With(logger, "ts", log.DefaultTimestampUTC, "caller", log.DefaultCaller)
+Package level documentation is useful for godoc users: which is the standard documentation format for Go.  Package level
+documentation is generally placed in a separate [doc.go](./doc.go) file. Write this documentation assuming people are
+already sold on using your code and just want broader context on how to use the library correctly.  Focus less on
+explicit usage and more on overall API correctness.
 
-logger.Log("msg", "hello")
+## tools.go
 
-// Output:
-// ts=2016-01-01T12:34:56Z caller=main.go:15 msg=hello
-```
+A [tools.go](./tools.go) file is a nice way to lock down versions of go binaries that you later download with `go install`.
+Some more information about this approach on [GitHub](https://github.com/golang/go/issues/25922) and the primary
+wiki page for [go modules](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module).
 
-## Levels
+## Visible code coverage
 
-Log levels are supported via the [level package](https://godoc.org/github.com/go-kit/kit/log/level).
+Test code coverage of some amount can communicate a commitment to having working code. Both
+[codecov](https://codecov.io) and [coveralls](https://docs.coveralls.io/go)
+are fine.  I've defaulted to codecov since it integrates well with CircleCI and did not require a separate step of
+uploading a token to your CI's environment: making it easier for new developers to just get started.
 
-## Supported output formats
+Codecov usually recommends downloading and executing a shell command from an unversioned URL.  To mitigate issues
+around this, I instead download directly from
+[a SHA1 version](https://raw.githubusercontent.com/codecov/codecov-bash/1044b7a243e0ea0c05ed43c2acd8b7bb7cef340c/codecov).
 
-- [Logfmt](https://brandur.org/logfmt) ([see also](https://blog.codeship.com/logfmt-a-log-format-thats-easy-to-read-and-write))
-- JSON
+If you're generating artifacts like coverage profiles, you'll want to add them to your [.gitignore](./.gitignore) file as well.
 
-## Enhancements
+## Go modules
 
-`package log` is centered on the one-method Logger interface.
+[Modules](./go.mod) are the now standard way to manage dependencies of Go code.  The CI process runs both `go mod download` and
+`go mod verify` to check your dependencies.
+The build process uses `-mod=readonly` to ensure your CI checks the `go.mod` file for missing dependencies.
 
-```go
-type Logger interface {
-	Log(keyvals ...interface{}) error
-}
-```
+The [go.sum](./go.sum) file is checked into the repository to verify your downloaded dependencies continue to match and
+aren't changed from under you.
 
-This interface, and its supporting code like is the product of much iteration
-and evaluation. For more details on the evolution of the Logger interface,
-see [The Hunt for a Logger Interface](http://go-talks.appspot.com/github.com/ChrisHines/talks/structured-logging/structured-logging.slide#1),
-a talk by [Chris Hines](https://github.com/ChrisHines).
-Also, please see
-[#63](https://github.com/go-kit/kit/issues/63),
-[#76](https://github.com/go-kit/kit/pull/76),
-[#131](https://github.com/go-kit/kit/issues/131),
-[#157](https://github.com/go-kit/kit/pull/157),
-[#164](https://github.com/go-kit/kit/issues/164), and
-[#252](https://github.com/go-kit/kit/pull/252)
-to review historical conversations about package log and the Logger interface.
+# Contributing
 
-Value-add packages and suggestions,
-like improvements to [the leveled logger](https://godoc.org/github.com/go-kit/kit/log/level),
-are of course welcome. Good proposals should
+Tell people how they can contribute.  Start with something simple and create a `CONTRIBUTING.md` file if you really
+need it.
 
-- Be composable with [contextual loggers](https://godoc.org/github.com/go-kit/kit/log#With),
-- Not break the behavior of [log.Caller](https://godoc.org/github.com/go-kit/kit/log#Caller) in any wrapped contextual loggers, and
-- Be friendly to packages that accept only an unadorned log.Logger.
+Contributions welcome!  Submit a pull request on github and make sure your code passes `make lint test`.  For
+large changes, I strongly recommend [creating an issue](https://github.com/cep21/gotemplate/issues) on GitHub first to
+confirm your change will be accepted before writing a lot of code.  GitHub issues are also recommended, at your discretion,
+for smaller changes or questions.
 
-## Benchmarks & comparisons
+# License
 
-There are a few Go logging benchmarks and comparisons that include Go kit's package log.
-
-- [imkira/go-loggers-bench](https://github.com/imkira/go-loggers-bench) includes kit/log
-- [uber-common/zap](https://github.com/uber-common/zap), a zero-alloc logging library, includes a comparison with kit/log
+This library is licensed under the Apache 2.0 License.
