@@ -1,6 +1,6 @@
 // +build tools
 
-package gotemplate
+package log
 
 // External tools.  See https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module
 

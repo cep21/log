@@ -43,11 +43,11 @@ endif
 ifndef REPO
 	$(error REPO is undefined)
 endif
-	git grep -l 'cep21/gotemplate' | xargs perl -i -pe"s#cep21/gotemplate#$(OWNER)/$(REPO)#g"
-	git grep -l 'gotemplate' | xargs perl -i -pe"s#gotemplate#$(REPO)#g"
-	mv gotemplate.go $(REPO).go
-	mv gotemplate_example_test.go $(REPO)_example_test.go
-	mv gotemplate_test.go $(REPO)_test.go
+	git grep -l 'cep21/log' | xargs perl -i -pe"s#cep21/log#$(OWNER)/$(REPO)#g"
+	git grep -l 'log' | xargs perl -i -pe"s#log#$(REPO)#g"
+	mv log.go $(REPO).go
+	mv log_example_test.go $(REPO)_example_test.go
+	mv log_test.go $(REPO)_test.go
 	go test ./...
 	@echo "CircleCI URL: https://circleci.com/add-projects/gh/$(OWNER)"
 	@echo "Codecov URL:  https://codecov.io/gh/$(OWNER)/+"
