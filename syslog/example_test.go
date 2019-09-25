@@ -9,9 +9,9 @@ import (
 
 	gosyslog "log/syslog"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
-	"github.com/go-kit/kit/log/syslog"
+	"github.com/cep21/log/level"
+	"github.com/cep21/log/syslog"
+	"github.com/cep21/log/logfmt"
 )
 
 func ExampleNewLogger_defaultPrioritySelector() {
@@ -23,7 +23,7 @@ func ExampleNewLogger_defaultPrioritySelector() {
 	}
 
 	// syslog logger with logfmt formatting
-	logger := syslog.NewSyslogLogger(w, log.NewLogfmtLogger)
+	logger := syslog.NewSyslogLogger(w, logfmt.NewLogfmtLogger)
 	logger.Log("msg", "info because of default")
 	logger.Log(level.Key(), level.DebugValue(), "msg", "debug because of explicit level")
 }

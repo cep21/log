@@ -2,11 +2,12 @@ package log_test
 
 import (
 	"bytes"
+	"github.com/cep21/log/logfmt"
 	"io"
 	"os"
 	"testing"
 
-	"github.com/go-kit/kit/log"
+	"github.com/cep21/log"
 )
 
 func TestSwapLogger(t *testing.T) {
@@ -31,7 +32,7 @@ func TestSwapLogger(t *testing.T) {
 	}
 
 	buf.Reset()
-	prefix := log.NewLogfmtLogger(buf)
+	prefix := logfmt.NewLogfmtLogger(buf)
 	logger.Swap(prefix)
 
 	if err := logger.Log("k", "v"); err != nil {
@@ -60,7 +61,7 @@ func TestSwapLoggerConcurrency(t *testing.T) {
 func TestSyncLoggerConcurrency(t *testing.T) {
 	var w io.Writer
 	w = &bytes.Buffer{}
-	logger := log.NewLogfmtLogger(w)
+	logger := logfmt.NewLogfmtLogger(w)
 	logger = log.NewSyncLogger(logger)
 	testConcurrency(t, logger, 10000)
 }
@@ -69,7 +70,7 @@ func TestSyncWriterConcurrency(t *testing.T) {
 	var w io.Writer
 	w = &bytes.Buffer{}
 	w = log.NewSyncWriter(w)
-	testConcurrency(t, log.NewLogfmtLogger(w), 10000)
+	testConcurrency(t, logfmt.NewLogfmtLogger(w), 10000)
 }
 
 func TestSyncWriterFd(t *testing.T) {

@@ -2,14 +2,15 @@ package term_test
 
 import (
 	"bytes"
+	"github.com/cep21/log/logfmt"
 	"io"
 	"io/ioutil"
 	"strconv"
 	"sync"
 	"testing"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/term"
+	"github.com/cep21/log"
+	"github.com/cep21/log/term"
 )
 
 func TestColorLogger(t *testing.T) {
@@ -33,7 +34,7 @@ func TestColorLogger(t *testing.T) {
 }
 
 func newColorLogger(w io.Writer) log.Logger {
-	return term.NewColorLogger(w, log.NewLogfmtLogger,
+	return term.NewColorLogger(w, logfmt.NewLogfmtLogger,
 		func(keyvals ...interface{}) term.FgBgColor {
 			if keyvals[0] == "a" {
 				return term.FgBgColor{Fg: term.Green, Bg: term.White}

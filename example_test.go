@@ -6,11 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-kit/kit/log"
+	"github.com/cep21/log"
+	"github.com/cep21/log/logfmt"
 )
 
 func Example_basic() {
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 
 	type Task struct {
 		ID int
@@ -30,7 +31,7 @@ func Example_basic() {
 }
 
 func Example_contextual() {
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 
 	type Task struct {
 		ID  int
@@ -60,7 +61,7 @@ func Example_contextual() {
 }
 
 func Example_valuer() {
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 
 	count := 0
 	counter := func() interface{} {
@@ -79,7 +80,7 @@ func Example_valuer() {
 }
 
 func Example_debugInfo() {
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 
 	// make time predictable for this test
 	baseTime := time.Date(2015, time.February, 3, 10, 0, 0, 0, time.UTC)
@@ -98,14 +99,14 @@ func Example_debugInfo() {
 	logger.Log("call", "third")
 
 	// Output:
-	// time=2015-02-03T10:00:01Z caller=example_test.go:93 call=first
-	// time=2015-02-03T10:00:02Z caller=example_test.go:94 call=second
-	// time=2015-02-03T10:00:03Z caller=example_test.go:98 call=third
+	// time=2015-02-03T10:00:01Z caller=example_test.go:94 call=first
+	// time=2015-02-03T10:00:02Z caller=example_test.go:95 call=second
+	// time=2015-02-03T10:00:03Z caller=example_test.go:99 call=third
 }
 
 func Example_syncWriter() {
 	w := log.NewSyncWriter(os.Stdout)
-	logger := log.NewLogfmtLogger(w)
+	logger := logfmt.NewLogfmtLogger(w)
 
 	type Task struct {
 		ID int

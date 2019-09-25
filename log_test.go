@@ -3,17 +3,18 @@ package log_test
 import (
 	"bytes"
 	"fmt"
+	"github.com/cep21/log/logfmt"
 	"sync"
 	"testing"
 
-	"github.com/go-kit/kit/log"
+	"github.com/cep21/log"
 	"github.com/go-stack/stack"
 )
 
 func TestContext(t *testing.T) {
 	t.Parallel()
 	buf := &bytes.Buffer{}
-	logger := log.NewLogfmtLogger(buf)
+	logger := logfmt.NewLogfmtLogger(buf)
 
 	kvs := []interface{}{"a", 123}
 	lc := log.With(logger, kvs...)

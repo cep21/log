@@ -2,10 +2,11 @@ package term_test
 
 import (
 	"errors"
+	"github.com/cep21/log/logfmt"
 	"os"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/term"
+	"github.com/cep21/log"
+	"github.com/cep21/log/term"
 )
 
 func ExampleNewLogger_redErrors() {
@@ -19,7 +20,7 @@ func ExampleNewLogger_redErrors() {
 		return term.FgBgColor{}
 	}
 
-	logger := term.NewLogger(os.Stdout, log.NewLogfmtLogger, colorFn)
+	logger := term.NewLogger(os.Stdout, logfmt.NewLogfmtLogger, colorFn)
 
 	logger.Log("msg", "default color", "err", nil)
 	logger.Log("msg", "colored because of error", "err", errors.New("coloring error"))

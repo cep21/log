@@ -1,11 +1,12 @@
 package level_test
 
 import (
+	"github.com/cep21/log/logfmt"
 	"io/ioutil"
 	"testing"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/cep21/log"
+	"github.com/cep21/log/level"
 )
 
 func Benchmark(b *testing.B) {
@@ -32,7 +33,7 @@ func Benchmark(b *testing.B) {
 		logger log.Logger
 	}{
 		{"Nop", log.NewNopLogger()},
-		{"Logfmt", log.NewLogfmtLogger(ioutil.Discard)},
+		{"Logfmt", logfmt.NewLogfmtLogger(ioutil.Discard)},
 		{"JSON", log.NewJSONLogger(ioutil.Discard)},
 	}
 

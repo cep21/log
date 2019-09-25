@@ -2,14 +2,15 @@ package level_test
 
 import (
 	"errors"
+	"github.com/cep21/log/logfmt"
 	"os"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/cep21/log"
+	"github.com/cep21/log/level"
 )
 
 func Example_basic() {
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 	level.Debug(logger).Log("msg", "this message is at thte debug level")
 	level.Info(logger).Log("msg", "this message is at the info level")
 	level.Warn(logger).Log("msg", "this message is at the warn level")
@@ -24,7 +25,7 @@ func Example_basic() {
 
 func Example_filtered() {
 	// Set up logger with level filter.
-	logger := log.NewLogfmtLogger(os.Stdout)
+	logger := logfmt.NewLogfmtLogger(os.Stdout)
 	logger = level.NewFilter(logger, level.AllowInfo())
 	logger = log.With(logger, "caller", log.DefaultCaller)
 
@@ -34,6 +35,6 @@ func Example_filtered() {
 	level.Debug(logger).Log("next item", 17) // filtered
 
 	// Output:
-	// level=error caller=example_test.go:32 err="bad data"
-	// level=info caller=example_test.go:33 event="data saved"
+	// level=error caller=example_test.go:33 err="bad data"
+	// level=info caller=example_test.go:34 event="data saved"
 }

@@ -1,18 +1,44 @@
-package log
+package log_test
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/cep21/log/logfmt"
+	ceplog "github.com/cep21/log"
 	"log"
+	"regexp"
 	"testing"
 	"time"
 )
+
+const (
+	logRegexpDate = `(?P<date>[0-9]{4}/[0-9]{2}/[0-9]{2})?[ ]?`
+	logRegexpTime = `(?P<time>[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?)?[ ]?`
+	logRegexpFile = `(?P<file>.+?:[0-9]+)?`
+	logRegexpMsg  = `(: )?(?P<msg>.*)`
+)
+
+var (
+	logRegexp = regexp.MustCompile(logRegexpDate + logRegexpTime + logRegexpFile + logRegexpMsg)
+)
+
+func subexps(line []byte) map[string]string {
+	m := logRegexp.FindSubmatch(line)
+	if len(m) < len(logRegexp.SubexpNames()) {
+		return map[string]string{}
+	}
+	result := map[string]string{}
+	for i, name := range logRegexp.SubexpNames() {
+		result[name] = string(m[i])
+	}
+	return result
+}
 
 func TestStdlibWriter(t *testing.T) {
 	buf := &bytes.Buffer{}
 	log.SetOutput(buf)
 	log.SetFlags(log.LstdFlags)
-	logger := NewLogfmtLogger(StdlibWriter{})
+	logger := logfmt.NewLogfmtLogger(ceplog.StdlibWriter{})
 	logger.Log("key", "val")
 	timestamp := time.Now().Format("2006/01/02 15:04:05")
 	if want, have := timestamp+" key=val\n", buf.String(); want != have {
@@ -22,8 +48,8 @@ func TestStdlibWriter(t *testing.T) {
 
 func TestStdlibAdapterUsage(t *testing.T) {
 	buf := &bytes.Buffer{}
-	logger := NewLogfmtLogger(buf)
-	writer := NewStdlibAdapter(logger)
+	logger := logfmt.NewLogfmtLogger(buf)
+	writer := ceplog.NewStdlibAdapter(logger)
 	stdlog := log.New(writer, "", 0)
 
 	now := time.Now()
@@ -35,9 +61,9 @@ func TestStdlibAdapterUsage(t *testing.T) {
 		log.Ldate:                              "ts=" + date + " msg=hello\n",
 		log.Ltime:                              "ts=" + time + " msg=hello\n",
 		log.Ldate | log.Ltime:                  "ts=\"" + date + " " + time + "\" msg=hello\n",
-		log.Lshortfile:                         "caller=stdlib_test.go:44 msg=hello\n",
-		log.Lshortfile | log.Ldate:             "ts=" + date + " caller=stdlib_test.go:44 msg=hello\n",
-		log.Lshortfile | log.Ldate | log.Ltime: "ts=\"" + date + " " + time + "\" caller=stdlib_test.go:44 msg=hello\n",
+		log.Lshortfile:                         "caller=stdlib_test.go:70 msg=hello\n",
+		log.Lshortfile | log.Ldate:             "ts=" + date + " caller=stdlib_test.go:70 msg=hello\n",
+		log.Lshortfile | log.Ldate | log.Ltime: "ts=\"" + date + " " + time + "\" caller=stdlib_test.go:70 msg=hello\n",
 	} {
 		buf.Reset()
 		stdlog.SetFlags(flag)
@@ -50,8 +76,8 @@ func TestStdlibAdapterUsage(t *testing.T) {
 
 func TestStdLibAdapterExtraction(t *testing.T) {
 	buf := &bytes.Buffer{}
-	logger := NewLogfmtLogger(buf)
-	writer := NewStdlibAdapter(logger)
+	logger := logfmt.NewLogfmtLogger(buf)
+	writer := ceplog.NewStdlibAdapter(logger)
 	for input, want := range map[string]string{
 		"hello":                                            "msg=hello\n",
 		"2009/01/23: hello":                                "ts=2009/01/23 msg=hello\n",

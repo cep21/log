@@ -11,13 +11,13 @@ import (
 
 	gosyslog "log/syslog"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/cep21/log/level"
+	"github.com/cep21/log/logfmt"
 )
 
 func TestSyslogLoggerDefaultPrioritySelector(t *testing.T) {
 	w := &testSyslogWriter{}
-	l := NewSyslogLogger(w, log.NewLogfmtLogger)
+	l := NewSyslogLogger(w, logfmt.NewLogfmtLogger)
 
 	l.Log("level", level.WarnValue(), "msg", "one")
 	l.Log("level", "undefined", "msg", "two")
@@ -86,7 +86,7 @@ func TestSyslogLoggerExhaustivePrioritySelector(t *testing.T) {
 		}
 		return gosyslog.LOG_LOCAL0
 	}
-	l := NewSyslogLogger(w, log.NewLogfmtLogger, PrioritySelectorOption(selector))
+	l := NewSyslogLogger(w, logfmt.NewLogfmtLogger, PrioritySelectorOption(selector))
 
 	l.Log("level", "warning", "msg", "one")
 	l.Log("level", "error", "msg", "two")

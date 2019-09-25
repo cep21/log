@@ -3,7 +3,7 @@ package log_test
 import (
 	"testing"
 
-	"github.com/go-kit/kit/log"
+	"github.com/cep21/log"
 )
 
 func TestNopLogger(t *testing.T) {

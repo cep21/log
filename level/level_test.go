@@ -3,12 +3,13 @@ package level_test
 import (
 	"bytes"
 	"errors"
+	"github.com/cep21/log/logfmt"
 	"io"
 	"strings"
 	"testing"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/cep21/log"
+	"github.com/cep21/log/level"
 )
 
 func TestVariousLevels(t *testing.T) {
@@ -142,12 +143,12 @@ func TestLevelContext(t *testing.T) {
 	// Wrapping the level logger with a context allows users to use
 	// log.DefaultCaller as per normal.
 	var logger log.Logger
-	logger = log.NewLogfmtLogger(&buf)
+	logger = logfmt.NewLogfmtLogger(&buf)
 	logger = level.NewFilter(logger, level.AllowAll())
 	logger = log.With(logger, "caller", log.DefaultCaller)
 
 	level.Info(logger).Log("foo", "bar")
-	if want, have := `level=info caller=level_test.go:149 foo=bar`, strings.TrimSpace(buf.String()); want != have {
+	if want, have := `level=info caller=level_test.go:150 foo=bar`, strings.TrimSpace(buf.String()); want != have {
 		t.Errorf("\nwant '%s'\nhave '%s'", want, have)
 	}
 }
@@ -158,12 +159,12 @@ func TestContextLevel(t *testing.T) {
 	// Wrapping a context with the level logger still works, but requires users
 	// to specify a higher callstack depth value.
 	var logger log.Logger
-	logger = log.NewLogfmtLogger(&buf)
+	logger = logfmt.NewLogfmtLogger(&buf)
 	logger = log.With(logger, "caller", log.Caller(5))
 	logger = level.NewFilter(logger, level.AllowAll())
 
 	level.Info(logger).Log("foo", "bar")
-	if want, have := `caller=level_test.go:165 level=info foo=bar`, strings.TrimSpace(buf.String()); want != have {
+	if want, have := `caller=level_test.go:166 level=info foo=bar`, strings.TrimSpace(buf.String()); want != have {
 		t.Errorf("\nwant '%s'\nhave '%s'", want, have)
 	}
 }
@@ -176,7 +177,7 @@ func TestLevelFormatting(t *testing.T) {
 	}{
 		{
 			name:   "logfmt",
-			format: log.NewLogfmtLogger,
+			format: logfmt.NewLogfmtLogger,
 			output: `level=info foo=bar`,
 		},
 		{
